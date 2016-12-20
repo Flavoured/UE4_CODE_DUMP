@@ -4,25 +4,10 @@
 ##Setup
 
 1. Add the functions to your project.
-2. Go through the .h and .cpp files and replace ClassName with the classes name.
+2. Replace ClassName with the name of the class the function is placed in.
 
 ##Implementation
-
-1. Add the following line to the header file of the object that needs a health component.
-
-	UHealthComponent HealthComponent;
 	
-2. Add the following line to the constructor in the cpp file of the object that needs a health component.
+Call LaunchNewObjectTowardsLocation when you want to spawn a new object and launch it immediatly
 
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(this, TEXT("HealthComponent"));
-	
-3. Call AmmoComponent->Fire(); when you are shooting.
-4. Call AmmoComponent->Reload(); when you want to reload.
-
-This Health Component contains 1 blueprint assignable event that is called OnHealthDepleted which triggers when health reaches zero
-
-##Useful extra functions:
-
-__GetHealthPercent()__ - Returns 0-1 value for the amount of health left __( Useful for HUDS and progress bars )__.
-
-__IsDepleted()__ - Returns true if you have 0 health or less.
+Call LaunchObjectTowardsLocation when you have an already existing object that you want to launch
