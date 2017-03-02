@@ -4,7 +4,7 @@ Implementation:
 GAMENAME_API needs to be set to the name that you chose
 When you created the project
 
-eg. SHOOTERGAME_API
+eg. SHOOTERGAME_API - Make sure its in capitals
 
 
 Usage:
@@ -20,13 +20,13 @@ Put This In Your Gun Constructor (Gun.cpp)
 #pragma once
 
 #include "Components/ActorComponent.h"
-#include "AmmoComponent.generated.h"
+#include "AmmoComponent.generated.h" // May need to regenerate visual studio files after adding the files to your project
 
 
-DECLARE_MULTICAST_DELEGATE(FAmmoComponentDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAmmoComponentDelegate);
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Config=Game, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAMENAME_API UAmmoComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -56,7 +56,7 @@ public:
 
 	// Simple Function To Subtract Ammo and Clamps between 0 - MaxAmmo
 	UFUNCTION(BlueprintCallable, Category = "AmmoComponent")
-		int32 TakeAmmo();
+		int32 TakeAmmo(int32 Amount);
 
 	// Simple Function To Add Ammo and Clamps between 0 - MaxAmmo
 	UFUNCTION(BlueprintCallable, Category = "AmmoComponent")

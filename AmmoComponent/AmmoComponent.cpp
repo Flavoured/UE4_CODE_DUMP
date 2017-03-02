@@ -7,7 +7,7 @@ UAmmoComponent::UAmmoComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	bWantsBeginPlay = false;
+	//bWantsBeginPlay = false; // Deprecated?
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
@@ -55,7 +55,7 @@ void UAmmoComponent::Reload()
 bool UAmmoComponent::IsReloading()
 {
 	// TODO this sucks
-	return (bIsReloading && ReloadingHandle.IsValid() && GetWorldTimerManager().GetTimerRemaining(ReloadingHandle) > 0);
+	return (bIsReloading && ReloadingHandle.IsValid() && GetWorld()->GetTimerManager().GetTimerRemaining(ReloadingHandle) > 0);
 }
 
 void UAmmoComponent::CancelReload()
@@ -63,14 +63,13 @@ void UAmmoComponent::CancelReload()
 	if(IsReloading())
 	{
 		bIsReloading = false;
-		// TODO should this be -> ?
-		GetWorldTimerManager().ClearTimer(ReloadingHandle);
+		GetWorld()->GetTimerManager().ClearTimer(ReloadingHandle);
 	}
 }
 
-int32 UAmmoComponent::TakeAmmo()
+int32 UAmmoComponent::TakeAmmo(int32 Amount)
 {
-	SetAmmo(Ammo-1);
+	SetAmmo(Ammo-Amount);
 	return Ammo;
 }
 
@@ -94,7 +93,7 @@ int32 UAmmoComponent::GiveReserveAmmo(int32 Amount)
 
 int32 UAmmoComponent::SetAmmo(int32 NewAmmo)
 {
-	Ammo = Math.Clamp(NewAmmo, 0, MaxAmmo);
+	Ammo = FMath::Clamp(NewAmmo, 0, MaxAmmo);
 
 	if(Ammo <= 0)
 	{
@@ -106,11 +105,11 @@ int32 UAmmoComponent::SetAmmo(int32 NewAmmo)
 
 int32 UAmmoComponent::SetReserveAmmo(int32 NewReserveAmmo)
 {
-	ReserveAmmo = Math.Clamp(NewReserveAmmo, 0, MaxReserveAmmo);
+	ReserveAmmo = FMath::Clamp(NewReserveAmmo, 0, MaxReserveAmmo);
 
 	if(ReserveAmmo <= 0)
 	{
-		OnReserveAmmoDepleted.Broadcast();
+		OnReserveDepleted.Broadcast();
 	}
 
 	return ReserveAmmo;
@@ -150,9 +149,9 @@ float UAmmoComponent::GetAmmoPercent()
 
 float UAmmoComponent::GetRemaindingReloadTime()
 {
-	if(IsReloading() && ReloadingHandle.IsTimerActive())
+	if(IsReloading() && GetWorld()->GetTimerManager().IsTimerActive(ReloadingHandle))
 	{
-		return ReloadingHandle.GetTimerRemaining();
+		return GetWorld()->GetTimerManager().GetTimerRemaining(ReloadingHandle);
 	}
 	else
 	{
@@ -160,14 +159,14 @@ float UAmmoComponent::GetRemaindingReloadTime()
 	}
 }
 
-bool UAmmoComponent::NeedsAndCanReload();
+bool UAmmoComponent::NeedsAndCanReload()
 {
 	return NeedsToReload() && CanReload();
 }
 
 FString UAmmoComponent::GetDebugInfo()
 {
-	return "" + Ammo + " / " + ReserveAmmo + ", Reloading: " + bIsReloading;
+	return "" + FString::FromInt(Ammo) + " / " + FString::FromInt(ReserveAmmo) + ", Reloading: " + (bIsReloading ? "true" : "false");
 }
 
 void UAmmoComponent::ResetAmmo()
@@ -187,7 +186,7 @@ bool UAmmoComponent::NeedsToReload()
 	return Ammo < MaxAmmo;
 }
 
-bool UAmmoComponent::CanReload();
+bool UAmmoComponent::CanReload()
 {
 	return (ReserveAmmo > 0 && !bIsReloading);
 }
@@ -195,11 +194,9 @@ bool UAmmoComponent::CanReload();
 void UAmmoComponent::StartReloading()
 {
 	bIsReloading = true;
-	// TODO is this check actually going to return false after the first time?
 	if(!IsReloading())
 	{
-		// TODO convert this to GetWorldTimerManager()?
-		GetWorldTimerManager().SetTimer(ReloadingHandle, this, &UAmmoComponent::EndReloading, ReloadDuration);
+		GetWorld()->GetTimerManager().SetTimer(ReloadingHandle, this, &UAmmoComponent::FinishReloading, ReloadDuration);
 		OnReloadStart.Broadcast();
 	}
 }
