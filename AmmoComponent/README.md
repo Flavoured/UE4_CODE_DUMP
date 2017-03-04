@@ -5,12 +5,13 @@
 
 1. Add the .h and .cpp files to your project.
 2. Go through the .h and .cpp files and replace GameName with your projects name.
+3. May need to Generate Project Files
 
 ##Implementation
 
 1. Add the following line to the header file of the object that needs an ammo component.
 
-	UAmmoComponent AmmoComponent;
+	UAmmoComponent* AmmoComponent;
 	
 2. Add the following line to the cpp file of the object that needs an ammo component.
 
@@ -22,11 +23,15 @@
 You can modify variables in the details panel of the component on the object it is attached to.
 The Fire and Reload functions handle everything for you, but if you want you can run functions directly.
 
-This Ammo Component contains 4 blueprint assignable event defined below
-OnAmmoDepleted - Called when you run out of your main ammo.
-OnReserveDepleted - Called when you run out of your reserve ammo.
-OnReloadStart - Called when reloading starts.
-OnReloadComplete - Called when reloading has finished.
+##Delegates / blueprint events:
+
+__OnAmmoDepleted__ - Called when you run out of your main ammo.
+
+__OnReserveDepleted__ - Called when you run out of your reserve ammo.
+
+__OnReloadStart__ - Called when reloading starts.
+
+__OnReloadComplete__ - Called when reloading has finished.
 
 ##Useful extra functions:
 

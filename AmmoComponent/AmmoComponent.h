@@ -10,7 +10,7 @@ eg. SHOOTERGAME_API - Make sure its in capitals
 Usage:
 
 Put This In Your Gun Class File (Gun.h)
-	UAmmoComponent AmmoComponent;
+	UAmmoComponent* AmmoComponent;
 
 Put This In Your Gun Constructor (Gun.cpp)
 	AmmoComponent = CreateDefaultSubobject<UAmmoComponent>(this, TEXT("AmmoComponent"));
@@ -35,7 +35,7 @@ public:
 	// Sets default values for this component's properties
 	UAmmoComponent();
 
-	// Called when the game starts
+	// Called when the game starts - TODO: Do i need this?
 	virtual void BeginPlay() override;
 
 	// Handles all ammo for you
@@ -104,7 +104,7 @@ public:
 
 	// Simple Function That Returns float value for Time Left in Reload Timer ( 0 if timer doesn't exist )
 	UFUNCTION(BlueprintCallable, Category = "AmmoComponent")
-		float GetRemaindingReloadTime();
+		float GetRemainingReloadTime();
 
 	// Function that returns true if both NeedsToReload() and CanReload() are true
 	UFUNCTION(BlueprintCallable, Category = "AmmoComponent")
@@ -174,8 +174,7 @@ private:
 		bool bShootingInteruptsReload = false;
 
 	// Shouldn't need to touch this ever
-	// TODO this bool sucks, is almost useless
-		bool bIsReloading = false;
+	bool bIsReloading = false;
 
 	// Shouldn't need to touch this ever
 	FTimerHandle ReloadingHandle;

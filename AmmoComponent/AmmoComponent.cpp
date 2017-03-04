@@ -7,11 +7,11 @@ UAmmoComponent::UAmmoComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	//bWantsBeginPlay = false; // Deprecated?
+	bWantsBeginPlay = false;
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-// Called when the game starts
+// Called when the game starts - TODO: Do i need this?
 void UAmmoComponent::BeginPlay()
 {
 	// Check Constructor If Not Working (bWantsBeginPlay)
@@ -54,8 +54,7 @@ void UAmmoComponent::Reload()
 
 bool UAmmoComponent::IsReloading()
 {
-	// TODO this sucks
-	return (bIsReloading && ReloadingHandle.IsValid() && GetWorld()->GetTimerManager().GetTimerRemaining(ReloadingHandle) > 0);
+	return (bIsReloading && GetWorld()->GetTimerManager().IsTimerActive(ReloadingHandle));
 }
 
 void UAmmoComponent::CancelReload()
@@ -69,26 +68,22 @@ void UAmmoComponent::CancelReload()
 
 int32 UAmmoComponent::TakeAmmo(int32 Amount)
 {
-	SetAmmo(Ammo-Amount);
-	return Ammo;
+	return SetAmmo(Ammo-Amount);
 }
 
 int32 UAmmoComponent::GiveAmmo(int32 Amount)
 {
-	SetAmmo(Ammo+Amount);
-	return Ammo;
+	return SetAmmo(Ammo+Amount);
 }
 
 int32 UAmmoComponent::TakeReserveAmmo()
 {
-	SetReserveAmmo(ReserveAmmo-1);
-	return ReserveAmmo;
+	return SetReserveAmmo(ReserveAmmo-1);
 }
 
 int32 UAmmoComponent::GiveReserveAmmo(int32 Amount)
 {
-	SetReserveAmmo(ReserveAmmo+Amount);
-	return ReserveAmmo;
+	return SetReserveAmmo(ReserveAmmo+Amount);
 }
 
 int32 UAmmoComponent::SetAmmo(int32 NewAmmo)
@@ -129,7 +124,7 @@ int32 UAmmoComponent::SetMaxReserveAmmo(int32 NewMaxReserveAmmo)
 
 float UAmmoComponent::GetReloadTimeLeftPercent()
 {
-	return GetRemaindingReloadTime()/ReloadDuration;
+	return GetRemainingReloadTime()/ReloadDuration;
 }
 
 bool UAmmoComponent::IsAmmoDepleted()
@@ -147,7 +142,7 @@ float UAmmoComponent::GetAmmoPercent()
 	return Ammo/MaxAmmo;
 }
 
-float UAmmoComponent::GetRemaindingReloadTime()
+float UAmmoComponent::GetRemainingReloadTime()
 {
 	if(IsReloading() && GetWorld()->GetTimerManager().IsTimerActive(ReloadingHandle))
 	{
@@ -188,14 +183,14 @@ bool UAmmoComponent::NeedsToReload()
 
 bool UAmmoComponent::CanReload()
 {
-	return (ReserveAmmo > 0 && !bIsReloading);
+	return (ReserveAmmo > 0 && !IsReloading);
 }
 
 void UAmmoComponent::StartReloading()
 {
-	bIsReloading = true;
 	if(!IsReloading())
 	{
+		bIsReloading = true;
 		GetWorld()->GetTimerManager().SetTimer(ReloadingHandle, this, &UAmmoComponent::FinishReloading, ReloadDuration);
 		OnReloadStart.Broadcast();
 	}
@@ -203,7 +198,8 @@ void UAmmoComponent::StartReloading()
 
 void UAmmoComponent::FinishReloading()
 {
-	if(IsReloading())
+	//if(IsReloading())
+	if(bIsReloading)
 	{
 		if(ReserveAmmo >= (MaxAmmo - Ammo))
 		{
@@ -212,18 +208,14 @@ void UAmmoComponent::FinishReloading()
 		}
 		else
 		{
-			// TODO can remove this if statemeent
-			if(ReserveAmmo < (MaxAmmo - Ammo))
-			{
-				SetAmmo(ReserveAmmo);
-				SetReserveAmmo(0);
-			}
+			SetAmmo(ReserveAmmo);
+			SetReserveAmmo(0);
 		}
 		bIsReloading = false;
 		OnReloadComplete.Broadcast();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Called without reloading set"))
+		UE_LOG(LogTemp, Error, TEXT("Called without bIsReloading being true"))
 	}
 }
