@@ -7,7 +7,7 @@ UAmmoComponent::UAmmoComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	bWantsBeginPlay = false;
+	//bWantsBeginPlay = false;
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
@@ -183,7 +183,7 @@ bool UAmmoComponent::NeedsToReload()
 
 bool UAmmoComponent::CanReload()
 {
-	return (ReserveAmmo > 0 && !IsReloading);
+	return (ReserveAmmo > 0 && !IsReloading());
 }
 
 void UAmmoComponent::StartReloading()

@@ -135,6 +135,31 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "AmmoComponent")
 		FAmmoComponentDelegate OnReloadComplete;
 
+	// Variables
+	UPROPERTY(BlueprintReadWrite, Category = "Ammo")
+		int32 Ammo = 30;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ammo")
+		int32 MaxAmmo = 30;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ammo")
+		int32 ReserveAmmo = 90;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ammo")
+		int32 MaxReserveAmmo = 90;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ammo")
+		int32 BulletsPerShot = 1;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Reload")
+		float ReloadDuration = 2.f;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Reload")
+		bool FiringWithNoBulletsStartsReload = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Reload")
+		bool bShootingInteruptsReload = false;
+
 private:
 
 	// Setters
@@ -147,31 +172,6 @@ private:
 	// Shouldn't need to call these directly
 	void StartReloading();
 	void FinishReloading();
-
-	// Variables
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 Ammo = 30;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 MaxAmmo = 30;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 ReserveAmmo = 90;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 MaxReserveAmmo = 90;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		float ReloadDuration = 2.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		bool FiringWithNoBulletsStartsReload = false;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 BulletsPerShot = 1;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		bool bShootingInteruptsReload = false;
 
 	// Shouldn't need to touch this ever
 	bool bIsReloading = false;
