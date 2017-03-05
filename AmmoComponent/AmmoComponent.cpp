@@ -1,5 +1,5 @@
 // Change To The Name you chose when you created the project - eg. #include "ShooterGame.h"
-#include "GameName.h"
+#include "GunCPP.h"
 #include "AmmoComponent.h"
 
 // Sets default values for this component's properties
@@ -23,9 +23,16 @@ bool UAmmoComponent::Fire()
 	bool bSuccess = true; // Assume true by default
 	if(!IsAmmoDepleted())
 	{
-		if(bShootingInteruptsReload && IsReloading())
+		if(IsReloading())
 		{
-			CancelReload();
+			if (bShootingInteruptsReload)
+			{
+				CancelReload();
+			}
+			else
+			{
+				bSuccess = false;
+			}
 		}
 		else
 		{
